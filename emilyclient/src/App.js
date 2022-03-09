@@ -1,7 +1,14 @@
 import logo from './logo.svg';
+//import {useState} from 'react'
 import './App.css';
+import axios from 'axios';
 
 function App() {
+  const URL = "https://localhost:2424"
+  const buttonClicked = () => {
+    axios.get(`${URL}/test`)
+    .then(data => console.log(data))
+  }
   return (
     <div className="App">
       <header className="App-header">
@@ -18,6 +25,7 @@ function App() {
           Learn React
         </a>
       </header>
+      <button onClick={()=> buttonClicked()}>test connection</button>
     </div>
   );
 }
