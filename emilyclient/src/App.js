@@ -5,12 +5,8 @@ import { authentication } from './Firebase/firebase';
 import {signInWithPopup, GoogleAuthProvider} from 'firebase/auth'
 
 function App() {
-  const[displayName, setDisplayName] = useState("");
-  const[email, setEmail] = useState("");
-  const[uid, setUID] = useState("");
-  const[photoURL, setPhotoURL] = useState("");
+  const [user, setUser] = useState({});
   const[isHidden, setIsHidden] = useState(true);
-  const [loginTrigger, setLoginTrigger] = useState(0)
 
   const URL = "http://localhost:2424"
   const buttonClicked = () => {
@@ -20,38 +16,37 @@ function App() {
   const SignInWithGoogle = () => {
     const provider = new GoogleAuthProvider();
     signInWithPopup(authentication, provider)
-    .then((re) =>{
-      const p1 = setDisplayName(re.user.displayName);
-      const p2 = setEmail(re.user.email);
-      const p3 = setUID(re.user.uid);
-      const p4 = setPhotoURL(re.user.photoURL);
-    Promise.all([p1,p2,p3,p4]).then(() =>{
-    })
-    }).then(() => setIsHidden(false))
-  }
+    .then(async (re) =>{
+      await setUser({
+        displayName: re.user.displayName,
+        email: re.user.email,
+        uid: re.user.uid,
+        photoURL: re.user.photoURL
+      })})}
 
-  useEffect(() => {
-    if (loginTrigger != 2) {
-
-      if(displayName != "") {
-        if (email != "") {
-          if(photoURL != "") {
-
-          }
-          if(photoURL != "") {
-            setLoginTrigger(2);
-            axios.post(`${URL}/user/${displayName}/${email}/${uid}/${photoURL}`)
-          }
+      useEffect(() => {
+        const isEmpty = Object.keys(user).length === 0;
+        if (isEmpty === true) {
+          setIsHidden(true);
         }
-      }
-    }
-  }, [displayName,email,photoURL,uid, loginTrigger])
+        else {
+          setIsHidden(false);
+            axios.post(`${URL}/user`, {
+              params: {
+                displayName: user.displayName,
+                email: user.email,
+                uid: user.uid,
+                photoURL: user.photoURL
+              }
+            })
+        }
+      }, [user]);
   return (
     <div className="App">
       <button onClick={buttonClicked}>test connection</button>
       <button onClick={SignInWithGoogle}>Sign in with Google</button>
-      <div hidden={isHidden}>hello {displayName}</div>
-      <img src={photoURL} hidden={isHidden}/>
+      <div hidden={isHidden}>hello {user.displayName}</div>
+      <img src={user.photoURL} hidden={isHidden} alt="profilepic"/>
     </div>
   );
 }

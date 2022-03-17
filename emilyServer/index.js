@@ -19,14 +19,24 @@ app.get('/test', (req, res) => {
     res.send('test passed!')
 })
 
-app.post("/user/:displayName/:email/:uid/:photoURL", async (req, res) => {
-    console.log("Im here")
-    await User.create ({
-        displayName: req.params.displayName,
-        email: req.params.email,
-        uid: req.params.uid,
-        photoURL: req.params.photoURL
-});
+app.post("/user", async (req, res) => {
+    const user = await User.findOne({email: req.body.params.email}).select("email").lean();
+    if (user) {
+        await User.updateOne({
+            displayName: req.body.params.displayName,
+            email: req.body.params.email,
+            uid: req.body.params.uid,
+            photoURL: req.body.params.photoURL
+    });
+    }
+    else {
+        await User.create({
+            displayName: req.body.params.displayName,
+            email: req.body.params.email,
+            uid: req.body.params.uid,
+            photoURL: req.body.params.photoURL
+    });
+    }
 try {
     res.status(200).send("done");
 } catch (err) {
