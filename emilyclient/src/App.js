@@ -3,6 +3,7 @@ import './App.css';
 import axios from 'axios';
 import { authentication } from './Firebase/firebase';
 import {signInWithPopup, GoogleAuthProvider} from 'firebase/auth'
+import Maintenance from './Maintenance';
 
 function App() {
   const [user, setUser] = useState({});
@@ -35,7 +36,6 @@ function App() {
               params: {
                 displayName: user.displayName,
                 email: user.email,
-                uid: user.uid,
                 photoURL: user.photoURL
               }
             })
@@ -47,6 +47,7 @@ function App() {
       <button onClick={SignInWithGoogle}>Sign in with Google</button>
       <div hidden={isHidden}>hello {user.displayName}</div>
       <img src={user.photoURL} hidden={isHidden} alt="profilepic"/>
+      <Maintenance />
     </div>
   );
 }

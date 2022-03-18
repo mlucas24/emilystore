@@ -25,7 +25,6 @@ app.post("/user", async (req, res) => {
         await User.updateOne({
             displayName: req.body.params.displayName,
             email: req.body.params.email,
-            uid: req.body.params.uid,
             photoURL: req.body.params.photoURL
     });
     }
@@ -33,7 +32,6 @@ app.post("/user", async (req, res) => {
         await User.create({
             displayName: req.body.params.displayName,
             email: req.body.params.email,
-            uid: req.body.params.uid,
             photoURL: req.body.params.photoURL
     });
     }
@@ -43,6 +41,28 @@ try {
     res.status(502).send(err);
 }
 })
+app.post("/item-maintenance", async (req, res) => {
+    const item = await Item.findOne({itemName: req.body.params.itemName}).select("itemName").lean();
+    if (item) {
+        await Item.updateOne({
+            itemName: req.body.params.itemName,
+            description: req.body.params.description,
+            price: req.body.params.price,
+            mainPhotoURL: req.body.params.mailPhotoURL,
+            photos: req.body.params.photos,
+            quantity: req.body.params.quantity
+        });
+    } else {
+        await Item.create({
+            itemName: req.body.params.itemName,
+            description: req.body.params.description,
+            price: req.body.params.price,
+            mainPhotoURL: req.body.params.mailPhotoURL,
+            photos: req.body.params.photos,
+            quantity: req.body.params.quantity
+        });
+    }
+});
 
 
 const PORT = process.env.PORT || 2424;
