@@ -4,16 +4,16 @@ import axios from 'axios';
 import { authentication } from './Firebase/firebase';
 import {signInWithPopup, GoogleAuthProvider} from 'firebase/auth'
 import Maintenance from './Maintenance';
+import AppBarMUI from './Components/AppBarMUI';
+import { ThemeProvider } from '@mui/material';
+import themeOptions from './MUI/themeOptions';
 
 function App() {
-  const [user, setUser] = useState({});
-  const[isHidden, setIsHidden] = useState(true);
+  const [user, setUser] = useState({displayName: "", email: "", uid:"", photoURL: ""});
 
-  const URL = "http://localhost:2424"
-  const buttonClicked = () => {
-    axios.get(`${URL}/test`)
-    .then(data => console.log(data))
-  }
+  const URL = "http://localhost:8080";
+  //const URL = "https://emilyserver-2qvoitnhwq-uc.a.run.app";
+
   const SignInWithGoogle = () => {
     const provider = new GoogleAuthProvider();
     signInWithPopup(authentication, provider)
@@ -25,30 +25,11 @@ function App() {
         photoURL: re.user.photoURL
       })})}
 
-      useEffect(() => {
-        const isEmpty = Object.keys(user).length === 0;
-        if (isEmpty === true) {
-          setIsHidden(true);
-        }
-        else {
-          setIsHidden(false);
-            axios.post(`${URL}/user`, {
-              params: {
-                displayName: user.displayName,
-                email: user.email,
-                photoURL: user.photoURL
-              }
-            })
-        }
-      }, [user]);
   return (
-    <div className="App">
-      <button onClick={buttonClicked}>test connection</button>
-      <button onClick={SignInWithGoogle}>Sign in with Google</button>
-      <div hidden={isHidden}>hello {user.displayName}</div>
-      <img src={user.photoURL} hidden={isHidden} alt="profilepic"/>
+    <ThemeProvider theme={themeOptions}>
+      <AppBarMUI user={user} SignInWithGoogle={SignInWithGoogle} />
       <Maintenance />
-    </div>
+      </ThemeProvider>
   );
 }
 
