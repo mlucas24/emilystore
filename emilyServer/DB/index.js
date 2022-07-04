@@ -1,4 +1,4 @@
-const PASSWORD = require("./PASSWORD");
+const PASSWORD = require("./PASSWORD.js");
 const mongoose = require('mongoose');
 
 mongoose.connect(

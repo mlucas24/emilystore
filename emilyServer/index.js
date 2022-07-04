@@ -1,8 +1,8 @@
 let express = require("express");
 let bodyParser = require("body-parser");
 const cors = require("cors");
-const db = require("./db/index");
-const User = require("./DB/User");
+const db = require("./DB/index.js");
+const User = require("./DB/User.js");
 
 let app = express();
 app.use(express.json());
@@ -65,7 +65,7 @@ app.post("/item-maintenance", async (req, res) => {
 });
 
 
-const PORT = process.env.PORT || 2424;
+const PORT = parseInt(process.env.PORT) || 8080;
 app.listen(PORT, () => {
     console.log("express listening on port", PORT)
 });
